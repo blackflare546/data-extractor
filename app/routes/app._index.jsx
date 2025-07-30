@@ -123,15 +123,19 @@ export default function ProductsPage() {
     }
   };
 
-  const formattedOutput = products
-    .map((p) => {
-      return `  {
-    "id": "${p.id.replace("gid://shopify/Product/", "")}",
-    "url": "${p.onlineStoreUrl || ""}",
-    "title": "${p.title}"
+const formattedOutput = products
+  .map((p) => {
+    const id = p.id.replace("gid://shopify/Product/", "");
+    const url = p.onlineStoreUrl || "";
+    const title = (p.title || "").replace(/"/g, ""); // remove any quotes from title
+    return `  {
+    id: ${id},
+    url: ${url},
+    title: ${title}
   },`;
-    })
-    .join("\n");
+  })
+  .join("\n");
+
 
   return (
     <Page>
