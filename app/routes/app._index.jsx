@@ -80,10 +80,10 @@ export default function ProductsPage() {
     fetcher.formMethod === "POST";
 
   const pageSizeOptions = [
-    { label: "10", value: "10" },
-    { label: "25", value: "25" },
-    { label: "50", value: "50" },
+    { label: "250", value: "250" },
     { label: "200", value: "200" },
+    { label: "100", value: "100" },
+    { label: "50", value: "50" },
   ];
 
   const submitForm = (options = {}) => {
@@ -123,18 +123,18 @@ export default function ProductsPage() {
     }
   };
 
-const formattedOutput = products
-  .map((p) => {
-    const id = p.id.replace("gid://shopify/Product/", "");
-    const url = p.onlineStoreUrl || "";
-    const title = (p.title || "").replace(/"/g, ""); // remove any quotes from title
-    return `  {
+  const formattedOutput = products
+    .map((p) => {
+      const id = p.id.replace("gid://shopify/Product/", "");
+      const url = p.onlineStoreUrl || "";
+      const title = (p.title || "").replace(/"/g, ""); // remove any quotes from title
+      return `  {
     id: ${id},
     url: ${url},
     title: ${title}
   },`;
-  })
-  .join("\n");
+    })
+    .join("\n");
 
 
   return (
