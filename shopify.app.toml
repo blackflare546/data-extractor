@@ -3,7 +3,7 @@
 client_id = "c731ed7b9339a4f90447eec674bf7989"
 name = "data-extractor"
 handle = "data-extractor-8"
-application_url = "https://jill-steam-chat-witnesses.trycloudflare.com"
+application_url = "https://barbara-dollars-api-ap.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,7 +26,7 @@ api_version = "2025-07"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://jill-steam-chat-witnesses.trycloudflare.com/auth/callback", "https://jill-steam-chat-witnesses.trycloudflare.com/auth/shopify/callback", "https://jill-steam-chat-witnesses.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://barbara-dollars-api-ap.trycloudflare.com/auth/callback", "https://barbara-dollars-api-ap.trycloudflare.com/auth/shopify/callback", "https://barbara-dollars-api-ap.trycloudflare.com/api/auth/callback"]
 
 [pos]
 embedded = false
