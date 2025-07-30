@@ -1,0 +1,32 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "c731ed7b9339a4f90447eec674bf7989"
+name = "data-extractor"
+handle = "data-extractor-8"
+application_url = "https://jill-steam-chat-witnesses.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true
+
+[webhooks]
+api_version = "2025-07"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = ["https://jill-steam-chat-witnesses.trycloudflare.com/auth/callback", "https://jill-steam-chat-witnesses.trycloudflare.com/auth/shopify/callback", "https://jill-steam-chat-witnesses.trycloudflare.com/api/auth/callback"]
+
+[pos]
+embedded = false
