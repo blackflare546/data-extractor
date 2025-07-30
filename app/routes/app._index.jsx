@@ -27,33 +27,55 @@ export const action = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   const formData = await request.formData();
 
-  const pageSize = parseInt(formData.get("pageSize")) || 10;
-  const cursor = formData.get("cursor") || null;
   const direction = formData.get("direction") || "next";
   const page = parseInt(formData.get("page")) || 1;
+  const pageSize = parseInt(formData.get("pageSize")) || 250;
+  const cursor = formData.get("cursor");
 
-  const query = `
-    query GetProducts($cursor: String, $pageSize: Int!) {
-      products(first: $pageSize, after: $cursor) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          endCursor
-          startCursor
-        }
-        nodes {
-          id
-          title
-          onlineStoreUrl
+  let query = "";
+  let variables = { pageSize };
+
+  if (direction === "next") {
+    query = `
+      query GetProducts($cursor: String, $pageSize: Int!) {
+        products(first: $pageSize, after: $cursor) {
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            endCursor
+            startCursor
+          }
+          nodes {
+            id
+            title
+            onlineStoreUrl
+          }
         }
       }
-    }
-  `;
+    `;
+    if (cursor) variables.cursor = cursor;
+  } else {
+    query = `
+      query GetProducts($cursor: String, $pageSize: Int!) {
+        products(last: $pageSize, before: $cursor) {
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            endCursor
+            startCursor
+          }
+          nodes {
+            id
+            title
+            onlineStoreUrl
+          }
+        }
+      }
+    `;
+    if (cursor) variables.cursor = cursor;
+  }
 
-  const response = await admin.graphql(query, {
-    variables: { cursor, pageSize },
-  });
-
+  const response = await admin.graphql(query, { variables });
   const json = await response.json();
   const data = json.data.products;
 
@@ -65,11 +87,12 @@ export const action = async ({ request }) => {
   };
 };
 
+
 export default function ProductsPage() {
   const fetcher = useFetcher();
   const products = fetcher.data?.products || [];
   const pageInfo = fetcher.data?.pageInfo || {};
-  const pageSize = fetcher.data?.pageSize || 10;
+  const pageSize = fetcher.data?.pageSize || 250;
   const currentPage = fetcher.data?.currentPage || 1;
 
   const [targetPage, setTargetPage] = useState(currentPage);
@@ -81,14 +104,13 @@ export default function ProductsPage() {
 
   const pageSizeOptions = [
     { label: "250", value: "250" },
-    { label: "200", value: "200" },
-    { label: "100", value: "100" },
-    { label: "50", value: "50" },
   ];
 
   const submitForm = (options = {}) => {
     const form = new FormData();
-    form.append("pageSize", options.pageSize ?? pageSize);
+    const effectivePageSize = Number(options.pageSize ?? pageSize);
+
+    form.append("pageSize", String(effectivePageSize));
     form.append("page", String(options.page ?? currentPage));
 
     if (options.cursor) form.append("cursor", options.cursor);
@@ -154,6 +176,7 @@ export default function ProductsPage() {
                       submitForm({ pageSize: value, page: 1 })
                     }
                   />
+
                   <Button onClick={() => submitForm({})} loading={isFetching}>
                     Fetch Products
                   </Button>
